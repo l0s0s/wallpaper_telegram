@@ -31,4 +31,5 @@ async def fetch_and_send_posts():
             
         
 if __name__ == "__main__":
+    time.sleep(300)
     asyncio.run(fetch_and_send_posts())
