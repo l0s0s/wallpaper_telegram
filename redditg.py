@@ -2,6 +2,7 @@ import praw
 from telegram.ext import ApplicationBuilder
 import asyncio
 from os import environ
+import time
 
 telegram_channel_id = environ.get('TELEGRAM_CHANNEL_ID')
 
@@ -18,7 +19,7 @@ def is_image(url):
 
 async def fetch_and_send_posts():
     subreddit = reddit.subreddit('wallpaper')
-    for submission in subreddit.new(limit=20, time_filter="hour"):
+    for submission in subreddit.top(limit=20, time_filter="hour"):
         if submission.over_18:
             continue
         try:
