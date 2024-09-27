@@ -2,7 +2,9 @@ import praw
 from telegram.ext import ApplicationBuilder
 import asyncio
 from os import environ
-from telegram import ParseMode
+import redis
+
+r = redis.Redis(host='localhost', port=6379, db=0)
 
 telegram_channel_id = environ.get('TELEGRAM_CHANNEL_ID')
 
@@ -20,16 +22,16 @@ def is_image(url):
 async def fetch_and_send_posts():
     subreddit = reddit.subreddit('wallpaper')
     for submission in subreddit.top(limit=20, time_filter="hour"):
-        if submission.over_18:
+        if submission.over_18 or r.exists(submission.id):
             continue
         try:
             if is_image(submission.url):
                 await app.bot.send_photo(chat_id=telegram_channel_id, photo=submission.url, caption=submission.title)
                 await app.bot.send_document(chat_id=telegram_channel_id, document=submission.url)
+                r.set(submission.id, 0, ex=604800)
         except:
             continue
-        
-            
+
         
 if __name__ == "__main__":
     asyncio.run(fetch_and_send_posts())
