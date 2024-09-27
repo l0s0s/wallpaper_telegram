@@ -21,7 +21,7 @@ def is_image(url):
 
 async def fetch_and_send_posts():
     subreddit = reddit.subreddit('wallpaper')
-    for submission in subreddit.top(limit=20, time_filter="today"):
+    for submission in subreddit.top(limit=20, time_filter="day"):
         if submission.over_18 or r.exists(submission.id):
             continue
         try:
